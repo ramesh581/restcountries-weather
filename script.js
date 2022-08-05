@@ -1,6 +1,6 @@
 
 
-async function fun(){
+async function restcountries(){
     try {
         let divElement = document.createElement("div");
         divElement.setAttribute('class','container');
@@ -17,38 +17,55 @@ async function fun(){
         let body = document.querySelector('body');
         body.appendChild(divElement);
 
-        let response = await fetch("https://raw.githubusercontent.com/rvsp/restcountries-json-data/master/res-countries.json");
+        let response = await fetch("https://restcountries.com/v2/all");
         let data = await response.json();
         console.log(data[0].name);
 
         for (let i = 0; i < data.length; i++) {
+            let flag = data[i].flag;
         div2.innerHTML += `
         <div class="card text-center m-0 p-0 col-lg-4 col-sm-12">
         <p class="card-header bg-dark text-light m-0 p-2">${data[i].name}</p>
         
         <div class="card-body">
-            <img class="img-fluid rounded img-thumbnail" src="india-flag.jpg" alt="Flag"/>
+        
+        <image src='${data[i].flag}' height="200" width="200"/>
+        
             <p>Capital : ${data[i].capital}</p>
             <p>Region : ${data[i].region}</p>
             <p>Country Code : ${data[i].alpha3Code}</p>
             <p>latlang : ${data[i].latlng}</p>
+            <p class="temp"> </p>
             <button class="btn btn-primary">Click for Weather</button>
         </div>
-        </div>`;
+        </div>`
+        
         };
-        let weatherData = document.querySelector('.btn');
-        weatherData.addEventListener('click', async() => {
+        let weatherData = document.getElementsByClassName('btn');
+        for(let i = 0; i < weatherData.length; i++) {
+        weatherData[i].addEventListener('click', async() => {
+            try{
+                let temp = document.querySelectorAll('.temp');
+            let response1 = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${data[i].latlng[0]}&lon=${data[i].latlng[1]}&appid=20e4ab537600bb7494f3b1cbcd2147e0`);
+            let data1 = await response1.json();
+            let temperature = Number(data1.main.temp)-273.15;
 
-            // let response1 = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${data[i].latlng[0]}&lon=${data[i].latlng[1]}&appid=20e4ab537600bb7494f3b1cbcd2147e0`);
-            // let data1 = await response1.json();
+            temp[i].innerHTML = `
+            temp: ${temperature} C
+            `;
+
             
-            window.open(`https://api.openweathermap.org/data/2.5/weather?lat=${data[0].latlng[0]}&lon=${data[0].latlng[1]}&appid=20e4ab537600bb7494f3b1cbcd2147e0`,"","location=center");
+            }catch(e){
+                console.log("Error1");
+            }
 
 
         });
+    }
+        
     }catch(err){
         console.log("Error");
     }
 }
 
-fun();
+restcountries();
