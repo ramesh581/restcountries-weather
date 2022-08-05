@@ -49,6 +49,7 @@ async function restcountries(){
             let response1 = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${data[i].latlng[0]}&lon=${data[i].latlng[1]}&appid=20e4ab537600bb7494f3b1cbcd2147e0`);
             let data1 = await response1.json();
             let temperature = Number(data1.main.temp)-273.15;
+                temperature = temperature.toFixed(2);
 
             temp[i].innerHTML = `
             temp: ${temperature} C
